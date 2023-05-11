@@ -69,9 +69,45 @@ class ImageGenerator:
 
         return str(last_index).zfill(5)
 
-    def getimage_pos(self, index, bbox) -> Tuple[int, int]:
+    def getimage_pos(self, index: int, bbox: tuple) -> Tuple[int, int]:
+        """
+        get image position from index and bbox
+        :param index: index of image reference to pythainlp all character function
+        :param bbox: bbox of text
+        :return: (x, y) where image in that index should be
+        """
+
+        # kor kai to hor nog hook
+        # 0 to 43
+        # Thai Number and special character
+        # 74 to 87
+        # 46, 48, 56, 57
+        thai_main = [i for i in range(0, 47)]
+        thai_nums_special = [i for i in range(74, 88)]
+        sub_special = [48, 49, 56, 57, 61, 68]
+        if index in thai_main or index in thai_nums_special or index in sub_special:
+            return (
+                (self.canvas_size[0] - bbox[2]) // 2,
+                -10
+            )
+
+        float_major = [range(50, 54)]
+        float_special = [47, 62, 63, 71, 72, 73]
+        if index in float_major or index in float_special:
+            return (
+                (self.canvas_size[0] - bbox[2]) // 2,
+                -10
+            )
+
+        diving_character = [54, 55]
+        if index in diving_character:
+            return (
+                (self.canvas_size[0] - bbox[2]) // 2,
+                10
+            )
 
         # default center
+        # 58 to 60 use default
         return (
             (self.canvas_size[0] - bbox[2]) // 2,
             (self.canvas_size[1] - bbox[3]) // 2,
