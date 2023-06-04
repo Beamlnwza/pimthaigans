@@ -50,7 +50,8 @@ class ImageGenerator:
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype(self.font_path, self.font_size)
         bbox = font.getbbox(text)
-        img_pos = self.getimage_pos(index=index, bbox=bbox)
+        # img_pos = self.getimage_pos2(bbox)
+        img_pos = self.getimage_pos2(bbox)
         draw.text(img_pos, text, self.font_color, font=font)
         label_out_path = os.path.join(out_path, str(index).zfill(2))
         pic_name = self.check_index(label_out_path)
@@ -88,7 +89,7 @@ class ImageGenerator:
         if index in thai_main or index in thai_nums_special or index in sub_special:
             return (
                 (self.canvas_size[0] - bbox[2]) // 2,
-                -10
+                (self.canvas_size[1] - bbox[3]) // 2.5,
             )
 
         float_major = [range(50, 54)]
@@ -96,14 +97,14 @@ class ImageGenerator:
         if index in float_major or index in float_special:
             return (
                 (self.canvas_size[0] - bbox[2]) // 2,
-                -10
+                (self.canvas_size[1] - bbox[3]) // 2.5,
             )
 
         diving_character = [54, 55]
         if index in diving_character:
             return (
                 (self.canvas_size[0] - bbox[2]) // 2,
-                10
+                (self.canvas_size[1] - bbox[3]) // 2.5,
             )
 
         # default center
@@ -112,3 +113,14 @@ class ImageGenerator:
             (self.canvas_size[0] - bbox[2]) // 2,
             (self.canvas_size[1] - bbox[3]) // 2,
         )
+
+    def getimage_pos2(self, bbox: tuple) -> Tuple[float, float]:
+        """
+        return default position for all
+        :param bbox: bbox of text
+        :return: (x, y) where image in that index should be
+        """
+        x = (self.canvas_size[0] - bbox[2]) / 2
+        y = (self.canvas_size[1] - bbox[3]) / 50
+
+        return x, y
