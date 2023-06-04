@@ -31,6 +31,11 @@ def remove_position(folder_path, pos):
 
 
 def remove_all_in_folder(folder_path):
+    """Remove all file in folder_path
+
+    Args:
+        folder_path (str): should be a folder path
+    """
     remove_path = []
 
     if not os.listdir(folder_path):
@@ -46,7 +51,6 @@ def remove_all_in_folder(folder_path):
             os.remove(i)
         elif os.path.isdir(i):
             shutil.rmtree(i)
-
 
 
 if __name__ == "__main__":

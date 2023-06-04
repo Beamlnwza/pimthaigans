@@ -74,3 +74,6 @@ target/
 .idea/
 
 /venv
+
+/.vscode
+.vscode/

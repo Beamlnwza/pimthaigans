@@ -50,7 +50,8 @@ class ImageGenerator:
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype(self.font_path, self.font_size)
         bbox = font.getbbox(text)
-        img_pos = self.getimage_pos(index=index, bbox=bbox)
+        # img_pos = self.getimage_pos2(bbox)
+        img_pos = self.getimage_pos2(bbox)
         draw.text(img_pos, text, self.font_color, font=font)
         label_out_path = os.path.join(out_path, str(index).zfill(2))
         pic_name = self.check_index(label_out_path)
@@ -69,10 +70,57 @@ class ImageGenerator:
 
         return str(last_index).zfill(5)
 
-    def getimage_pos(self, index, bbox) -> Tuple[int, int]:
+    def getimage_pos(self, index: int, bbox: tuple) -> Tuple[int, int]:
+        """
+        get image position from index and bbox
+        :param index: index of image reference to pythainlp all character function
+        :param bbox: bbox of text
+        :return: (x, y) where image in that index should be
+        """
+
+        # kor kai to hor nog hook
+        # 0 to 43
+        # Thai Number and special character
+        # 74 to 87
+        # 46, 48, 56, 57
+        thai_main = [i for i in range(0, 47)]
+        thai_nums_special = [i for i in range(74, 88)]
+        sub_special = [48, 49, 56, 57, 61, 68]
+        if index in thai_main or index in thai_nums_special or index in sub_special:
+            return (
+                (self.canvas_size[0] - bbox[2]) // 2,
+                (self.canvas_size[1] - bbox[3]) // 2.5,
+            )
+
+        float_major = [range(50, 54)]
+        float_special = [47, 62, 63, 71, 72, 73]
+        if index in float_major or index in float_special:
+            return (
+                (self.canvas_size[0] - bbox[2]) // 2,
+                (self.canvas_size[1] - bbox[3]) // 2.5,
+            )
+
+        diving_character = [54, 55]
+        if index in diving_character:
+            return (
+                (self.canvas_size[0] - bbox[2]) // 2,
+                (self.canvas_size[1] - bbox[3]) // 2.5,
+            )
 
         # default center
+        # 58 to 60 use default
         return (
             (self.canvas_size[0] - bbox[2]) // 2,
             (self.canvas_size[1] - bbox[3]) // 2,
         )
+
+    def getimage_pos2(self, bbox: tuple) -> Tuple[float, float]:
+        """
+        return default position for all
+        :param bbox: bbox of text
+        :return: (x, y) where image in that index should be
+        """
+        x = (self.canvas_size[0] - bbox[2]) / 2
+        y = (self.canvas_size[1] - bbox[3]) / 50
+
+        return x, y
